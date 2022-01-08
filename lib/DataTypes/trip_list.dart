@@ -1,15 +1,21 @@
 import 'package:mileage_tracker/DataTypes/trip.dart';
+import 'package:mileage_tracker/storage_manager.dart';
 
 class TripList {
 
   late List<Trip> _tripList;
+  bool isLoading = false;
 
   TripList() {
-    _tripList = loadTripList();
+    loadTripList();
   }
 
-  List<Trip> loadTripList() {
-    return List<Trip>.empty(growable: true);
+  void loadTripList() {
+    isLoading = true;
+    StorageManager.getTripList().then((tripList) {
+      _tripList = tripList;
+      isLoading = false;
+    });
   }
 
   void saveTripList() {
@@ -29,5 +35,4 @@ class TripList {
   void addNewTrip(Trip newTrip) {
     _tripList.add(newTrip);
   }
-
 }
