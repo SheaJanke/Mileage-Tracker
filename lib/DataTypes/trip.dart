@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:mileage_tracker/DataTypes/trip_reasons.dart';
 
 class Trip {
@@ -46,4 +47,19 @@ class Trip {
   bool isValid() {
     return _startKm < _endKm;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'date': _date.toString(),
+      'startKm': _startKm,
+      'endKm': _endKm,
+      'reason': _reason.toString(),
+    };
+  }
+
+  Trip.fromJson(Map<String, dynamic> json)
+    : _date = DateTime.parse(json['date']),
+    _startKm = json['startKm'],
+    _endKm = json['endKm'],
+    _reason = TripReason.values.firstWhere((e) => e.toString() == json['reason']);
 }

@@ -54,7 +54,8 @@ class StorageManager {
   static Future<List<Trip>> getTripList() async {
     return readJSON().then((json) {
       if(json.containsKey(StorageKeys.tripList.toString())){
-        return json[StorageKeys.tripList.toString()];
+        List<dynamic> list = json[StorageKeys.tripList.toString()];
+        return list.map((e) => Trip.fromJson(e)).toList();
       }
       return List<Trip>.empty(growable: true);
     });

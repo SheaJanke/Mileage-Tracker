@@ -15,14 +15,18 @@ class TripList {
     StorageManager.getTripList().then((tripList) {
       _tripList = tripList;
       isLoading = false;
+      print("TripList: $_tripList");
     });
   }
 
   void saveTripList() {
-    
+    StorageManager.saveTripList(_tripList);
   }
 
   int getNumTrips() {
+    if(isLoading){
+      return 0;
+    }
     return _tripList.length;
   }
 
@@ -34,5 +38,6 @@ class TripList {
 
   void addNewTrip(Trip newTrip) {
     _tripList.add(newTrip);
+    saveTripList();
   }
 }
