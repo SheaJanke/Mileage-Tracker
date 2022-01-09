@@ -4,9 +4,10 @@ import 'package:mileage_tracker/DataTypes/trip_reasons.dart';
 class Trip {
   DateTime _date;
   int _startKm, _endKm;
+  String _startAddress, _endAddress;
   TripReason _reason;
 
-  Trip(this._date, this._startKm, this._endKm, this._reason);
+  Trip(this._date, this._startKm, this._endKm, this._startAddress, this._endAddress, this._reason);
 
   int calcTripDistance() {
     return _endKm - _startKm;
@@ -36,6 +37,22 @@ class Trip {
     return _endKm;
   }
 
+  void setStartAddress(String startAddress) {
+    _startAddress = startAddress;
+  }
+
+  String getStartAddress() {
+    return _startAddress;
+  }
+
+  void setEndAddress(String endAddress) {
+    _endAddress = endAddress;
+  }
+
+  String getEndAddress() {
+    return _endAddress;
+  }
+
   void setReason(TripReason reason) {
     _reason = reason;
   }
@@ -54,6 +71,8 @@ class Trip {
       'startKm': _startKm,
       'endKm': _endKm,
       'reason': _reason.toString(),
+      'startAddress': _startAddress,
+      'endAddress': _endAddress,
     };
   }
 
@@ -61,5 +80,7 @@ class Trip {
     : _date = DateTime.parse(json['date']),
     _startKm = json['startKm'],
     _endKm = json['endKm'],
+    _startAddress = json['startAddress'],
+    _endAddress = json['endAddress'],
     _reason = TripReason.values.firstWhere((e) => e.toString() == json['reason']);
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mileage_tracker/DataTypes/trip.dart';
 import 'package:mileage_tracker/DataTypes/trip_list.dart';
 import 'package:mileage_tracker/DataTypes/trip_reasons.dart';
+import 'package:mileage_tracker/Widgets/trip_list_widget.dart';
 import 'package:mileage_tracker/storage_manager.dart';
 
 class TripListPage extends StatefulWidget {
@@ -18,7 +19,6 @@ class _TripListPageState extends State<TripListPage> {
   void initState() {
     super.initState();
     StorageManager.getTripList().then((tripList) {
-      print('Finished loading');
       setState(() {
         _tripList = TripList(tripList);
       });
@@ -31,19 +31,20 @@ class _TripListPageState extends State<TripListPage> {
       appBar: AppBar(
         title: const Text('WorkSafeBC Mileage Tracker'),
       ),
-      body: (_tripList != null) ? ListView.builder(
-          itemCount: _tripList!.getNumTrips(),
-          itemBuilder: (BuildContext context, int index) {
-            return Text(_tripList!.getTripAtIndex(index).getDate().toString());
-          }) : const CircularProgressIndicator(),
+      body: (_tripList != null)
+          ? TripListWidget(_tripList!)
+          : const Center(
+              child: CircularProgressIndicator(),
+            ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _tripList!.addNewTrip(Trip(DateTime.now(), 0, 1, TripReason.buisness));
-          setState((){
-            _tripList = _tripList;
-          });
-        },
-      ),
+          onPressed: () {
+            _tripList!
+                .addNewTrip(Trip(DateTime.now(), 0, 1, 'start', 'end', TripReason.buisness));
+            setState(() {
+              _tripList = _tripList;
+            });
+          },
+          child: const Icon(Icons.add)),
     );
   }
 }
