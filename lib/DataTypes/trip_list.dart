@@ -3,30 +3,15 @@ import 'package:mileage_tracker/storage_manager.dart';
 
 class TripList {
 
-  late List<Trip> _tripList;
-  bool isLoading = false;
+  final List<Trip> _tripList;
 
-  TripList() {
-    loadTripList();
-  }
-
-  void loadTripList() {
-    isLoading = true;
-    StorageManager.getTripList().then((tripList) {
-      _tripList = tripList;
-      isLoading = false;
-      print("TripList: $_tripList");
-    });
-  }
+  TripList(this._tripList);
 
   void saveTripList() {
     StorageManager.saveTripList(_tripList);
   }
 
   int getNumTrips() {
-    if(isLoading){
-      return 0;
-    }
     return _tripList.length;
   }
 

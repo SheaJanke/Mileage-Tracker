@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mileage_tracker/DataTypes/trip_reasons.dart';
 import 'package:mileage_tracker/Pages/trip_list_page.dart';
 
 void main() {
