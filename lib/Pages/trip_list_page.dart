@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mileage_tracker/DataTypes/trip.dart';
 import 'package:mileage_tracker/DataTypes/trip_list.dart';
 import 'package:mileage_tracker/DataTypes/trip_reasons.dart';
+import 'package:mileage_tracker/Pages/edit_trip_page.dart';
 import 'package:mileage_tracker/Widgets/trip_list_widget.dart';
 import 'package:mileage_tracker/storage_manager.dart';
 
@@ -38,11 +39,10 @@ class _TripListPageState extends State<TripListPage> {
             ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _tripList!
-                .addNewTrip(Trip(DateTime.now(), 0, 1, '6735 Station Hill Court', '8888 University Dr, Burnaby, BC V5A 1S6', TripReason.buisness));
-            setState(() {
-              _tripList = _tripList;
-            });
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EditTripPage()),
+            );
           },
           child: const Icon(Icons.add)),
     );

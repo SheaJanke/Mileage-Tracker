@@ -2,20 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mileage_tracker/DataTypes/trip.dart';
 import 'package:intl/intl.dart';
+import 'package:mileage_tracker/Pages/edit_trip_page.dart';
+
+import '../styles.dart';
 
 class TripListItem extends StatelessWidget {
   final Trip _trip;
   String _date;
   int _distance;
-
-  final TextStyle boldStyle = const TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-  );
-
-  final TextStyle normalStyle = const TextStyle(
-    fontSize: 18,
-  );
 
   TripListItem(Trip trip)
       : _trip = trip,
@@ -34,7 +28,12 @@ class TripListItem extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           splashColor: Colors.green.shade300,
-          onTap: () => print("pressed"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => EditTripPage(trip: _trip)),
+            );
+          },
           child: Padding(
             padding: const EdgeInsets.all(8),
             child: Row(
@@ -45,11 +44,11 @@ class TripListItem extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.play_arrow),
+                          const Icon(Icons.play_arrow_rounded),
                           Flexible(
                             child: Text(
                               _trip.getStartAddress(),
-                              style: normalStyle,
+                              style: Styles.normalStyle,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -57,11 +56,11 @@ class TripListItem extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          const Icon(Icons.stop),
+                          const Icon(Icons.stop_rounded),
                           Flexible(
                             child: Text(
                               _trip.getEndAddress(),
-                              style: normalStyle,
+                              style: Styles.normalStyle,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -75,11 +74,11 @@ class TripListItem extends StatelessWidget {
                   children: [
                     Text(
                       _date,
-                      style: boldStyle,
+                      style: Styles.boldStyle,
                     ),
                     Text(
                       "$_distance km",
-                      style: boldStyle,
+                      style: Styles.boldStyle,
                     ),
                   ],
                 ),
