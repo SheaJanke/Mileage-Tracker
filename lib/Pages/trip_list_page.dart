@@ -39,7 +39,7 @@ class _TripListPageState extends State<TripListPage> {
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             _tripList!
-                .addNewTrip(Trip(DateTime.now(), 0, 1, 'start', 'end', TripReason.buisness));
+                .addNewTrip(Trip(DateTime.now(), 0, 1, '6735 Station Hill Court', '8888 University Dr, Burnaby, BC V5A 1S6', TripReason.buisness));
             setState(() {
               _tripList = _tripList;
             });
