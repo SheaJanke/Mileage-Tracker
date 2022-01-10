@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mileage_tracker/DataTypes/trip.dart';
 
 import '../styles.dart';
@@ -15,6 +16,13 @@ class EditTripPage extends StatefulWidget {
 
 class _EditTripPageState extends State<EditTripPage> {
   final _formKey = GlobalKey<FormState>();
+  final dateController = TextEditingController();
+
+  @override
+  void dispose() {
+    dateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +38,8 @@ class _EditTripPageState extends State<EditTripPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextFormField(
-                decoration: InputDecoration(
-                  icon: const Icon(Icons.play_arrow_rounded),
+                decoration: const InputDecoration(
+                  icon: Icon(Icons.play_arrow_rounded),
                   labelText: 'Start Address',
                 ),
                 style: Styles.normalStyle,
@@ -56,31 +64,38 @@ class _EditTripPageState extends State<EditTripPage> {
                 },
               ),
               TextFormField(
-                decoration: const InputDecoration(
-                  icon: const Icon(Icons.calendar_today),
-                  hintText: 'Enter your date of birth',
-                  labelText: 'Date',
-                ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter valid date';
-                  }
-                  return null;
-                },
-              ),
+                  readOnly: true,
+                  controller: dateController,
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_today),
+                    labelText: 'Date',
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter valid date';
+                    }
+                    return null;
+                  },
+                  onTap: () {
+                    showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2020),
+                            lastDate: DateTime(2030))
+                        .then((selectedDate) {
+                      if (selectedDate != null) {
+                        String date = DateFormat.MMMEd().format(selectedDate);
+                        dateController.text = date;
+                      }
+                    });
+                    // It returns true if the form is valid, otherwise returns false
+                    if (_formKey.currentState!.validate()) {}
+                  }),
               Container(
                   padding: const EdgeInsets.only(left: 150.0, top: 40.0),
                   child: RaisedButton(
                     child: const Text('Submit'),
-                    onPressed: () {
-                      showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2015, 8),
-                          lastDate: DateTime(2101));
-                      // It returns true if the form is valid, otherwise returns false
-                      if (_formKey.currentState!.validate()) {}
-                    },
+                    onPressed: () {},
                   )),
             ],
           ),
