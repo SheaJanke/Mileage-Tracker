@@ -23,8 +23,9 @@ class _EditTripPageState extends State<EditTripPage> {
   final _destinationAddressController = TextEditingController();
   final _dateController = TextEditingController();
   final _reasonController = TextEditingController();
-  final _startOdometer = TextEditingController();
-  final _endOdometer = TextEditingController();
+  final _startOdometerController = TextEditingController();
+  final _endOdometerController = TextEditingController();
+  final _notesController = TextEditingController();
 
   bool fetchingCurrentAddress = false;
 
@@ -39,8 +40,8 @@ class _EditTripPageState extends State<EditTripPage> {
     _destinationAddressController.dispose();
     _dateController.dispose();
     _reasonController.dispose();
-    _startOdometer.dispose();
-    _endOdometer.dispose();
+    _startOdometerController.dispose();
+    _endOdometerController.dispose();
     super.dispose();
   }
 
@@ -201,7 +202,7 @@ class _EditTripPageState extends State<EditTripPage> {
                   Expanded(
                     child: TextFormField(
                       autovalidateMode: AutovalidateMode.disabled,
-                      controller: _startOdometer,
+                      controller: _startOdometerController,
                       style: Styles.normalStyle,
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[
@@ -225,7 +226,7 @@ class _EditTripPageState extends State<EditTripPage> {
                   Expanded(
                     child: TextFormField(
                       autovalidateMode: AutovalidateMode.disabled,
-                      controller: _endOdometer,
+                      controller: _endOdometerController,
                       style: Styles.normalStyle,
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[
@@ -245,15 +246,42 @@ class _EditTripPageState extends State<EditTripPage> {
                   ),
                 ],
               ),
-              Container(
-                  padding: const EdgeInsets.only(left: 150.0, top: 40.0),
-                  child: RaisedButton(
-                    child: const Text('Submit'),
-                    onPressed: () {
-                      // It returns true if the form is valid, otherwise returns false
-                      if (_formKey.currentState!.validate()) {}
-                    },
-                  )),
+              TextFormField(
+                controller: _notesController,
+                autovalidateMode: AutovalidateMode.disabled,
+                decoration: const InputDecoration(
+                  labelText: 'Notes',
+                  labelStyle: Styles.boldStyle,
+                ),
+                style: Styles.normalStyle,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.all(16),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {}
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text(
+                        'Save',
+                        style: Styles.normalStyle,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ],
           ),
         ),
