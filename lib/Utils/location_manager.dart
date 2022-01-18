@@ -44,13 +44,12 @@ class LocationManager {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark placeMark = placemarks[0];
-    String name = placeMark.name!;
-    String subLocality = placeMark.subLocality!;
+    String street = placeMark.street!;
     String locality = placeMark.locality!;
     String administrativeArea = placeMark.administrativeArea!;
     String postalCode = placeMark.postalCode!;
     String address =
-        "$name, $subLocality, $locality, $administrativeArea $postalCode";
+        "$street, $locality, $administrativeArea $postalCode";
     return address;
   }
 }

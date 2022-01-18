@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mileage_tracker/DataTypes/trip.dart';
 import 'package:mileage_tracker/DataTypes/trip_reasons.dart';
@@ -18,13 +19,28 @@ class EditTripPage extends StatefulWidget {
 
 class _EditTripPageState extends State<EditTripPage> {
   final _formKey = GlobalKey<FormState>();
-  final dateController = TextEditingController();
+  final _startAddressController = TextEditingController();
+  final _destinationAddressController = TextEditingController();
+  final _dateController = TextEditingController();
+  final _reasonController = TextEditingController();
+  final _startOdometer = TextEditingController();
+  final _endOdometer = TextEditingController();
 
-  final reasonOptions = TripReason.values.map((e) => reasonText[e] ?? '').toList();
+  bool fetchingCurrentAddress = false;
+
+  late DateTime _dateValue;
+
+  final reasonOptions =
+      TripReason.values.map((e) => reasonText[e] ?? '').toList();
 
   @override
   void dispose() {
-    dateController.dispose();
+    _startAddressController.dispose();
+    _destinationAddressController.dispose();
+    _dateController.dispose();
+    _reasonController.dispose();
+    _startOdometer.dispose();
+    _endOdometer.dispose();
     super.dispose();
   }
 
@@ -57,13 +73,44 @@ class _EditTripPageState extends State<EditTripPage> {
               ),
               TextFormField(
                 autovalidateMode: AutovalidateMode.disabled,
+                controller: _destinationAddressController,
                 decoration: InputDecoration(
                   labelText: 'Destination Address',
                   labelStyle: Styles.boldStyle,
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.location_on),
-                    onPressed: () => LocationManager.getCurrentAddress(),
-                  ),
+                  suffixIcon: fetchingCurrentAddress == true
+                      ? Transform.scale(
+                          scale: 0.5,
+                          child: const CircularProgressIndicator(),
+                        )
+                      : IconButton(
+                          icon: const Icon(Icons.location_on),
+                          onPressed: () {
+                            setState(
+                              () {
+                                fetchingCurrentAddress = true;
+                              },
+                            );
+                            LocationManager.getCurrentAddress().then(
+                              (currentAddress) {
+                                _destinationAddressController.value =
+                                    TextEditingValue(
+                                  text: currentAddress,
+                                  selection: TextSelection.fromPosition(
+                                    TextPosition(offset: currentAddress.length),
+                                  ),
+                                );
+                              },
+                            ).whenComplete(
+                              () {
+                                setState(
+                                  () {
+                                    fetchingCurrentAddress = false;
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
                 ),
                 style: Styles.normalStyle,
                 validator: (value) {
@@ -74,13 +121,13 @@ class _EditTripPageState extends State<EditTripPage> {
                 },
               ),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: TextFormField(
                       autovalidateMode: AutovalidateMode.disabled,
                       readOnly: true,
-                      controller: dateController,
+                      controller: _dateController,
                       style: Styles.normalStyle,
                       decoration: InputDecoration(
                         labelStyle: Styles.boldStyle,
@@ -95,7 +142,8 @@ class _EditTripPageState extends State<EditTripPage> {
                               if (selectedDate != null) {
                                 String date =
                                     DateFormat.MMMEd().format(selectedDate);
-                                dateController.text = date;
+                                _dateController.text = date;
+                                _dateValue = selectedDate;
                               }
                             });
                           },
@@ -116,6 +164,12 @@ class _EditTripPageState extends State<EditTripPage> {
                   ),
                   Expanded(
                     child: DropdownButtonFormField(
+                      validator: (value) {
+                        if ((value as String?) == null) {
+                          return 'Please enter trip reason';
+                        }
+                        return null;
+                      },
                       items: reasonOptions.map((String category) {
                         return DropdownMenuItem(
                           value: category,
@@ -130,13 +184,63 @@ class _EditTripPageState extends State<EditTripPage> {
                         );
                       }).toList(),
                       onChanged: (newValue) {
-                        // do other stuff with _category
-                        setState(() => {});
+                        _reasonController.text = newValue as String;
                       },
                       decoration: const InputDecoration(
                         labelText: 'Reason',
                         labelStyle: Styles.boldStyle,
+                        contentPadding: EdgeInsets.only(top: 10, bottom: 11),
                       ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.disabled,
+                      controller: _startOdometer,
+                      style: Styles.normalStyle,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      decoration: const InputDecoration(
+                        labelStyle: Styles.boldStyle,
+                        labelText: 'Start Km',
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter start km';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      autovalidateMode: AutovalidateMode.disabled,
+                      controller: _endOdometer,
+                      style: Styles.normalStyle,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      decoration: const InputDecoration(
+                        labelStyle: Styles.boldStyle,
+                        labelText: 'End Km',
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter end km';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],
