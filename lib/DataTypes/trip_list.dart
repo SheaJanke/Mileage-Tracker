@@ -1,5 +1,5 @@
 import 'package:mileage_tracker/DataTypes/trip.dart';
-import 'package:mileage_tracker/storage_manager.dart';
+import 'package:mileage_tracker/Utils/storage_manager.dart';
 
 class TripList {
 

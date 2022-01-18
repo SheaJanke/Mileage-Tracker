@@ -4,7 +4,7 @@ import 'package:mileage_tracker/DataTypes/trip_list.dart';
 import 'package:mileage_tracker/DataTypes/trip_reasons.dart';
 import 'package:mileage_tracker/Pages/edit_trip_page.dart';
 import 'package:mileage_tracker/Widgets/trip_list_widget.dart';
-import 'package:mileage_tracker/storage_manager.dart';
+import 'package:mileage_tracker/Utils/storage_manager.dart';
 
 class TripListPage extends StatefulWidget {
   const TripListPage({Key? key}) : super(key: key);
