@@ -15,14 +15,29 @@ class TripList {
     return _tripList.length;
   }
 
+  int _getInverseIndex(int index) {
+    return _tripList.length - 1 - index;
+  }
+
   Trip getTripAtIndex(int index) {
     assert(index >= 0 && index < _tripList.length);
-    int inverseIndex = _tripList.length - 1 - index;
-    return _tripList.elementAt(inverseIndex);
+    return _tripList.elementAt(_getInverseIndex(index));
+  }
+
+  void setTripAtIndex(Trip trip, int index) {
+    if(index == -1){
+      addNewTrip(trip);
+    }else{
+      _tripList[_getInverseIndex(index)] = trip;
+    }
   }
 
   void addNewTrip(Trip newTrip) {
     _tripList.add(newTrip);
     saveTripList();
+  }
+
+  List<Trip> getTripList() {
+    return _tripList;
   }
 }

@@ -3,14 +3,18 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mileage_tracker/DataTypes/trip.dart';
 import 'package:mileage_tracker/DataTypes/trip_reasons.dart';
+import 'package:mileage_tracker/Pages/trip_list_page.dart';
 import 'package:mileage_tracker/Utils/location_manager.dart';
 
 import '../styles.dart';
 
 class EditTripPage extends StatefulWidget {
   final Trip? _trip;
-  const EditTripPage({Key? key, Trip? trip})
+  final UpdateTripFunction _updateTrip;
+  const EditTripPage(
+      {Key? key, Trip? trip, required UpdateTripFunction updateTrip})
       : _trip = trip,
+        _updateTrip = updateTrip,
         super(key: key);
 
   @override
@@ -18,6 +22,7 @@ class EditTripPage extends StatefulWidget {
 }
 
 class _EditTripPageState extends State<EditTripPage> {
+  Trip? _trip;
   final _formKey = GlobalKey<FormState>();
   final _startAddressController = TextEditingController();
   final _destinationAddressController = TextEditingController();
@@ -33,6 +38,14 @@ class _EditTripPageState extends State<EditTripPage> {
 
   final reasonOptions =
       TripReason.values.map((e) => reasonText[e] ?? '').toList();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _trip = widget._trip;
+    });
+  }
 
   @override
   void dispose() {
@@ -288,34 +301,34 @@ class _EditTripPageState extends State<EditTripPage> {
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {}
-                          },
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 48),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          child: const Text(
-                            'Save',
-                            style: Styles.normalStyle,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
                 ],
               ),
             ),
           ),
+        ),
+        bottomNavigationBar: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(4),
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {}
+                },
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 72),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: const Text(
+                  'Save',
+                  style: Styles.normalStyle,
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );

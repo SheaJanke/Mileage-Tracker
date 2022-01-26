@@ -6,6 +6,9 @@ import 'package:mileage_tracker/Pages/edit_trip_page.dart';
 import 'package:mileage_tracker/Widgets/trip_list_widget.dart';
 import 'package:mileage_tracker/Utils/storage_manager.dart';
 
+typedef UpdateTripIndexFunction = Function(Trip) Function(int);
+typedef UpdateTripFunction = Function(Trip);
+
 class TripListPage extends StatefulWidget {
   const TripListPage({Key? key}) : super(key: key);
 
@@ -26,6 +29,14 @@ class _TripListPageState extends State<TripListPage> {
     });
   }
 
+  Function(Trip) updateTrip(int index) => (Trip newTrip) {
+        _tripList?.setTripAtIndex(newTrip, index);
+        setState(() {}); // Need to re-render.
+        if (_tripList != null) {
+          StorageManager.saveTripList(_tripList!.getTripList());
+        }
+      };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +44,10 @@ class _TripListPageState extends State<TripListPage> {
         title: const Text('WorkSafeBC Mileage Tracker'),
       ),
       body: (_tripList != null)
-          ? TripListWidget(_tripList!)
+          ? TripListWidget(
+              tripList: _tripList!,
+              updateTripIndex: updateTrip,
+            )
           : const Center(
               child: CircularProgressIndicator(),
             ),
@@ -41,7 +55,11 @@ class _TripListPageState extends State<TripListPage> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const EditTripPage()),
+              MaterialPageRoute(
+                builder: (context) => EditTripPage(
+                  updateTrip: updateTrip(-1),
+                ),
+              ),
             );
           },
           child: const Icon(Icons.add)),

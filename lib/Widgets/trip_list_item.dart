@@ -3,18 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:mileage_tracker/DataTypes/trip.dart';
 import 'package:intl/intl.dart';
 import 'package:mileage_tracker/Pages/edit_trip_page.dart';
+import 'package:mileage_tracker/Pages/trip_list_page.dart';
 
 import '../styles.dart';
 
 class TripListItem extends StatelessWidget {
   final Trip _trip;
-  String _date;
-  int _distance;
+  final UpdateTripFunction _updateTrip;
+  final String _date;
+  final int _distance;
 
-  TripListItem(Trip trip)
+  TripListItem(
+      {Key? key, required Trip trip, required UpdateTripFunction updateTrip})
       : _trip = trip,
+        _updateTrip = updateTrip,
         _date = DateFormat.MMMd().format(trip.getDate()),
-        _distance = trip.calcTripDistance();
+        _distance = trip.calcTripDistance(),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +36,12 @@ class TripListItem extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => EditTripPage(trip: _trip)),
+              MaterialPageRoute(
+                builder: (context) => EditTripPage(
+                  trip: _trip,
+                  updateTrip: _updateTrip,
+                ),
+              ),
             );
           },
           child: Padding(
