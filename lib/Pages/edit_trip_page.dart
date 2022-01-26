@@ -31,13 +31,14 @@ class _EditTripPageState extends State<EditTripPage> {
   final _startOdometerController = TextEditingController();
   final _endOdometerController = TextEditingController();
   final _notesController = TextEditingController();
+  bool _hasSaved = false;
 
   bool fetchingCurrentAddress = false;
 
   late DateTime _dateValue;
 
   final reasonOptions =
-      TripReason.values.map((e) => reasonText[e] ?? '').toList();
+      TripReason.values.map((e) => reasonToText[e] ?? '').toList();
 
   @override
   void initState() {
@@ -45,6 +46,16 @@ class _EditTripPageState extends State<EditTripPage> {
     setState(() {
       _trip = widget._trip;
     });
+    if(_trip != null){
+      _startAddressController.text = _trip!.startAddress;
+      _destinationAddressController.text = _trip!.endAddress;
+      _dateController.text = DateFormat.MMMEd().format(_trip!.date);
+      _dateValue = _trip!.date;
+      _reasonController.text = reasonToText[_trip!.reason] ?? '';
+      _startOdometerController.text = _trip!.startKm.toString();
+      _endOdometerController.text = _trip!.endKm.toString();
+      _notesController.text = _trip!.notes;
+    }
   }
 
   @override
@@ -84,6 +95,20 @@ class _EditTripPageState extends State<EditTripPage> {
         false;
   }
 
+  void _saveTrip() {
+    Trip newTrip = Trip(
+      _dateValue, 
+      int.parse(_startOdometerController.text),
+      int.parse(_endOdometerController.text),
+      _startAddressController.text,
+      _destinationAddressController.text,
+      textToReason[_reasonController.text]!,
+      _notesController.text
+    );
+    widget._updateTrip(newTrip);
+    Navigator.of(context).pop(true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -101,6 +126,7 @@ class _EditTripPageState extends State<EditTripPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   TextFormField(
+                    controller: _startAddressController,
                     autovalidateMode: AutovalidateMode.disabled,
                     decoration: const InputDecoration(
                       labelText: 'Start Address',
@@ -208,6 +234,7 @@ class _EditTripPageState extends State<EditTripPage> {
                       ),
                       Expanded(
                         child: DropdownButtonFormField(
+                          value: _reasonController.text,
                           validator: (value) {
                             if ((value as String?) == null) {
                               return 'Please enter trip reason';
@@ -313,7 +340,9 @@ class _EditTripPageState extends State<EditTripPage> {
               padding: const EdgeInsets.all(4),
               child: ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {}
+                  if (_formKey.currentState!.validate()) {
+                    _saveTrip();
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   padding:

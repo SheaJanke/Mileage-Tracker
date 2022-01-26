@@ -17,7 +17,7 @@ class TripListItem extends StatelessWidget {
       {Key? key, required Trip trip, required UpdateTripFunction updateTrip})
       : _trip = trip,
         _updateTrip = updateTrip,
-        _date = DateFormat.MMMd().format(trip.getDate()),
+        _date = DateFormat.MMMd().format(trip.date),
         _distance = trip.calcTripDistance(),
         super(key: key);
 
@@ -57,7 +57,7 @@ class TripListItem extends StatelessWidget {
                           const Icon(Icons.play_arrow_rounded),
                           Flexible(
                             child: Text(
-                              _trip.getStartAddress(),
+                              _trip.startAddress,
                               style: Styles.normalStyle,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -69,7 +69,7 @@ class TripListItem extends StatelessWidget {
                           const Icon(Icons.stop_rounded),
                           Flexible(
                             child: Text(
-                              _trip.getEndAddress(),
+                              _trip.endAddress,
                               style: Styles.normalStyle,
                               overflow: TextOverflow.ellipsis,
                             ),
